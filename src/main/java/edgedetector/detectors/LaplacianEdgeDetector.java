@@ -20,17 +20,14 @@
 
 package edgedetector.detectors;
 
+import edgedetector.imagederivatives.ConvolutionKernel;
+import edgedetector.imagederivatives.ImageConvolution;
+import edgedetector.util.Grayscale;
+import edgedetector.util.Threshold;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
-import ui.ImageViewer;
-import util.Threshold;
-import edgedetector.imagederivatives.ConvolutionKernel;
-import edgedetector.imagederivatives.ImageConvolution;
-import grayscale.Grayscale;
 
 
 public class LaplacianEdgeDetector {
@@ -120,36 +117,19 @@ public class LaplacianEdgeDetector {
    public int getThreshold() {
       return threshold;
    }
-   
-   
-   /*********************************************************************
-    * Unit testing and display
-    *********************************************************************/
-   
-   /**
-    * Example run. 
-    * <P> Displays detected edges next to orignal image.
-    * @param args
-    * @throws IOException
-    */
-   public static void main(String[] args) throws IOException {
-      // read image and get pixels
-      String imageFile = args[0];
-      BufferedImage originalImage = ImageIO.read(new File(imageFile));
-      int[][] pixels = Grayscale.imgToGrayPixels(originalImage);
+
+   public static BufferedImage applyTransform(BufferedImage in) {
+      int[][] pixels = Grayscale.imgToGrayPixels(in);
 
       // run Laplacian edge detector
       LaplacianEdgeDetector led = new LaplacianEdgeDetector(pixels);
-      
+
       // get edges
       boolean[][] edges = led.getEdges();
 
       // make images out of edges
       BufferedImage laplaceImage = Threshold.applyThresholdReversed(edges);
 
-      // display edges
-      BufferedImage[] toShow = {originalImage, laplaceImage};
-      String title = "Laplace Edge Detection by Jason Altschuler";
-      ImageViewer.showImages(toShow, title);
+      return laplaceImage;
    }
 }

@@ -23,23 +23,13 @@
 package edgedetector.detectors;
 
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Stack;
-
-import javax.imageio.ImageIO;
-
-import kmeans.KMeans;
-import ui.ImageViewer;
-import util.CSVwriter;
-import util.Hypotenuse;
-import util.Threshold;
 import edgedetector.imagederivatives.ConvolutionKernel;
 import edgedetector.imagederivatives.ImageConvolution;
+import edgedetector.util.Hypotenuse;
+import edgedetector.util.KMeans;
 import edgedetector.util.NonMaximumSuppression;
-import grayscale.Grayscale;
+import java.util.HashSet;
+import java.util.Stack;
 
 
 public class CannyEdgeDetector {
@@ -410,8 +400,8 @@ public class CannyEdgeDetector {
    
    /**
     * Finds angle tangent to edge direction given image gradient in x and y directions.
-    * @param x
-    * @param y
+    * @param G_x
+    * @param G_y
     * @return
     */
    private NonMaximumSuppression.EdgeDirection direction(int G_x, int G_y) {
@@ -513,54 +503,6 @@ public class CannyEdgeDetector {
     */
    public int getColumns() {
       return columns;
-   }
-   
-
-   /*********************************************************************
-    * Unit testing
-    * @throws IOException 
-    *********************************************************************/
-
-   /**
-    * Example run. 
-    * <P> Displays detected edges next to orignal image.
-    * @param args
-    * @throws IOException
-    */
-   public static void main(String[] args) throws IOException {
-      // read image and get pixels
-      String img = args[0]; 
-      img = "dzeng2.jpg";
-      BufferedImage originalImage = ImageIO.read(new File(img));
-      int[][] pixels = Grayscale.imgToGrayPixels(originalImage);
-
-      // run SobelEdgeDetector
-      final long startTime = System.currentTimeMillis();
-      CannyEdgeDetector canny = new CannyEdgeDetector.Builder(pixels)
-                                                     .minEdgeSize(10)
-                                                     .thresholds(15, 35)
-                                                     .L1norm(false)
-                                                     .build();
-      final long endTime = System.currentTimeMillis();
-
-      // print timing information
-      final double elapsed = (double) (endTime - startTime) / 1000;
-      System.out.println("Canny Edge Detector took " + elapsed + " seconds.");
-
-      // display edges
-      boolean[][] edges = canny.getEdges();
-      boolean[][] weakEdges = canny.getWeakEdges();
-      boolean[][] strongEdges = canny.getStrongEdges();
-
-      BufferedImage cannyImage = Threshold.applyThresholdReversed(edges);
-      BufferedImage strongweakImage = Threshold.applyThresholdWeakStrongCanny(weakEdges, strongEdges);
-      BufferedImage edgesOriginalColor = Threshold.applyThresholdOriginal(edges, originalImage);
-
-      BufferedImage[] toShow = {originalImage, strongweakImage, cannyImage, edgesOriginalColor};
-      String title = "Canny Edge Detector by Jason Altschuler";
-      ImageViewer.showImages(toShow, title, 2, 2);
-
-      CSVwriter.write("canny", edges);
    }
 
 }

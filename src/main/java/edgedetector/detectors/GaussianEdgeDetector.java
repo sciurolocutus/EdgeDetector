@@ -10,9 +10,9 @@
 package edgedetector.detectors;
 
 import edgedetector.imagederivatives.ImageConvolution;
+import edgedetector.util.Hypotenuse;
 import edgedetector.util.NonMaximumSuppression;
-import util.Hypotenuse;
-import util.Threshold;
+import edgedetector.util.Threshold;
 
 public abstract class GaussianEdgeDetector {
 
